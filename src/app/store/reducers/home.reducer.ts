@@ -1,32 +1,49 @@
 import { createReducer, on, Action } from "@ngrx/store";
 import { Jobs } from "src/app/model/jobs";
-import { GetJobs, GetJobsFail, GetJobsSuccess } from "../actions/home.action";
-import { AppState } from "../home.state";
+import * as GlobalAction from "../actions/home.action";
 
-export interface HomeState{
+
+export interface State{
     jobs:Jobs;
     error:string;
-    status: 'Pending' | 'Success'| 'Fail';
+    isLoaded:boolean;
+    //status: 'Pending' | 'Success'| 'Fail';
 
 }
 
-export const initialAppState:HomeState={
+export const initialAppState:State={
 jobs:{} as Jobs,
 error:'',
-status:'Pending'
+isLoaded:false  
+//status:'Pending'
 }
 
 export const homeReducer=createReducer(
     initialAppState,
-    on(GetJobs,(state:HomeState)=>({...state})),
-    on(GetJobsSuccess,(state:HomeState,{jobs})=>({
-        ...state,
-        jobs:jobs,
-        status:'Success'
+    on(GlobalAction.getJobs,(state:any)=>({...state})),
+    on(GlobalAction.getJobsSuccess,(state,{data})=>({
+        error:'',       
+       // status:'Success',
+        jobs:data, 
+        isLoaded:true       
     })),
-    on(GetJobsFail,(state:HomeState,{error})=>({
+
+    // on(GlobalAction.getJobsSuccess,(state,{data})=>({
+    //     error:'',       
+    //    // status:'Success',
+    //     jobs:data,        
+    // })),
+    on(GlobalAction.getJobsFail,(state,error)=>({
         ...state,
-        status:"Fail"
+        status:error.any
 
     }))
     );
+
+ 
+export function getAllJobs(state: State | undefined, action:any) {
+   
+    return homeReducer(state, action);
+  }
+
+  

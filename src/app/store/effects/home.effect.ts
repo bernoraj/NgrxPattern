@@ -1,24 +1,23 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { AppState } from "../home.state";
 import { Store } from "@ngrx/store";
-import { GetJobs, GetJobsFail, GetJobsSuccess } from "../actions/home.action";
 import { catchError, map, switchMap } from "rxjs/operators";
 import { from, of } from "rxjs";
 import { HomeService } from "src/app/services/home.service";
-
+import * as GlobalAction from "../actions/home.action";
+import { Jobs } from "src/app/model/jobs";
 @Injectable()
 export class HomeEffects{
 
     constructor(
-        private actions$: Actions,
-        private store: Store<AppState>,
+        private actions$: Actions,      
         private homeService:HomeService){}
 
+      
     loadJobs$=createEffect(()=>this.actions$.pipe(
-        ofType(GetJobs),
-        switchMap(() => from(this.homeService.getJobs()).pipe(
-            map((jobs: any) => GetJobsSuccess({ jobs: jobs })),
-            catchError((error) => of(GetJobsFail({ error })))
+        ofType(GlobalAction.getJobs),
+        switchMap(() => from(this.homeService.getJobs1()).pipe(
+            map((response: Jobs) =>  {console.log("response:::", response);  return GlobalAction.getJobsSuccess({data:response})}),
+            catchError((error) => of(GlobalAction.getJobsFail(error)))
         ))));  
 }

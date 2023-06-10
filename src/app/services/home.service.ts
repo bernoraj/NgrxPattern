@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Jobs } from '../model/jobs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 
 @Injectable({
@@ -10,15 +10,16 @@ export class HomeService {
 
   constructor(private http: HttpClient) { }
 
-  async getJobs(): Promise<Jobs> {
-    let Jobs={} as Jobs;
-    let data= await this.http.get<any>('https://www.arbeitnow.com/api/job-board-api').pipe(map((res:Response)=>console.log(res.json())));
-    return Jobs;
+  async getJobs(): Promise<Observable<Jobs>> {
+   
+    return this.http.get<Jobs>('https://www.arbeitnow.com/api/job-board-api');
+   
   }
 
-   getJobs1(): Jobs {
-    let Jobs={} as Jobs;
-    let data=  this.http.get<any>('https://www.arbeitnow.com/api/job-board-api').pipe(map((res:Response)=>console.log(res.json())));
-    return Jobs;
+   getJobs1() {
+    console.log("getJobs1 service called");
+    const headers={'Content-Type':'application/json'};
+    return this.http.get<Jobs>('https://www.arbeitnow.com/api/job-board-api',{headers});
+    
   }
 }

@@ -1,5 +1,4 @@
-export interface Jobs {
-    [x: string]: any
+export interface Jobs {    
     data: Daum[]
     links: Links
     meta: Meta
